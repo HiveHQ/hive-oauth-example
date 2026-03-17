@@ -19,21 +19,22 @@ Serve the files from a local HTTP server (required — `file://` URLs don't work
 
 ```bash
 # Python
-python -m http.server 8000
+python -m http.server 9123
 
 # Node
 npx serve .
 ```
 
-Then open http://localhost:8000.
+Then open http://localhost:9123.
 
 ## Configuration
 
-Edit the `CONFIG` block at the top of `oauth.js`:
+Edit the `CONFIG` block at the top of `oauth.js`, adding your application's client ID and client secret:
 
 ```js
 const CONFIG = {
   clientId: "YOUR_CLIENT_ID",
+  clientSecret: "YOUR_CLIENT_SECRET",
   ...
 };
 ```

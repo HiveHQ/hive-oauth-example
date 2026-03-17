@@ -19,16 +19,21 @@ import { generateCodeVerifier, generateCodeChallenge } from "./pkce.js";
 // ---------------------------------------------------------------------------
 
 const CONFIG = {
-  // Your OAuth application's client ID, issued by Hive.
-  clientId: "En4qFK4JWVxAXuWIAT9AwMS9IONY0Nev9r7xE25i",
+  // Your OAuth application's client ID and client secret, issued by Hive.
+  clientId: "U0YZzvhKNBtCD0ol6U1aoWi11EKeBDe2B4AObmik",
+  clientSecret:
+    "yIcUHQ1skjwwJO9iOQzSML4Z2Fe04I7kLYmrirlEzIK9k3OigCN5HyVHBDRBZF16RAWlLYnZwkcd9pWb8LZp90c63fsqRGI1BcjIxq4rOXM8CeNCR2XVdQ7e5LmD0pty",
 
   // Where Hive should redirect after the user authorizes (or denies) access.
   // Must exactly match one of the redirect URIs registered on your application.
-  redirectUri: "http://localhost:8000/callback.html",
+  redirectUri: "http://localhost:9123/callback.html",
 
   // Hive API v2 OAuth endpoints.
-  authorizationEndpoint: "https://app.hive.co/oauth/api/authorize/",
-  tokenEndpoint: "https://app.hive.co/oauth/api/token/",
+  // authorizationEndpoint: "https://app.hive.co/oauth/api/authorize/",
+  // tokenEndpoint: "https://app.hive.co/oauth/api/token/",
+
+  authorizationEndpoint: "https://local.hive.co/oauth/api/authorize/",
+  tokenEndpoint: "https://local.hive.co/api/v2/oauth/token/",
 
   // The scopes your application needs. Space-separated.
   scope: "events:write orders:write contacts:write segments:write",
@@ -135,6 +140,7 @@ export async function handleCallback() {
       code,
       redirect_uri: CONFIG.redirectUri,
       client_id: CONFIG.clientId,
+      client_secret: CONFIG.clientSecret,
       code_verifier: codeVerifier, // PKCE: proves we initiated the request.
     }),
   });
