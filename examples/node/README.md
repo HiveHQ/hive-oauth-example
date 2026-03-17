@@ -1,16 +1,15 @@
-# Hive OAuth Example (Node.js)
+# Hive OAuth Example — Node.js
 
-A simple OAuth 2.0 example showing how a basic UI connects to Hive's OAuth server and initiates the Authorization Code flow.
+Express implementation of the Hive API v2 OAuth 2.0 Authorization Code Flow with PKCE.
 
 ## Setup
 
-Copy the environment file:
-
 ```bash
+cd examples/node
 cp .env.example .env
 ```
 
-Fill in your Hive OAuth credentials.
+Fill in your Hive OAuth credentials in `.env`.
 
 ## Install
 
@@ -20,28 +19,24 @@ npm install
 
 ## Run
 
-In one terminal, start the UI:
-
-```bash
-npm run ui
-```
-
-In another terminal, start the OAuth server:
+In one terminal, start the OAuth server:
 
 ```bash
 npm run server
 ```
 
-## Open
+In another terminal, serve the UI:
 
-```text
-http://localhost:3000
+```bash
+npm run ui
 ```
+
+Open http://localhost:3000.
 
 ## Redirect URI
 
-Make sure your Hive OAuth Application includes:
+Register the following in your Hive OAuth Application:
 
-```text
+```
 http://localhost:4000/callback
 ```

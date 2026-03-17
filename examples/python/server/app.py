@@ -3,10 +3,7 @@ from urllib.parse import urlencode
 from dotenv import load_dotenv
 from flask import Flask, jsonify, redirect, request, session
 from flask_cors import CORS
-from oauth import (
-    build_authorization_url,
-    exchange_code_for_token,
-)
+from oauth import build_authorization_url, exchange_code_for_token
 
 load_dotenv()
 
@@ -17,9 +14,18 @@ app.config["SESSION_COOKIE_SECURE"] = False
 
 UI_ORIGIN = "http://localhost:3000"
 
+# Allow the UI (served on port 3000) to make credentialed requests to this server.
 CORS(app, supports_credentials=True, origins=[UI_ORIGIN])
 
 
+def redirect_error(message: str):
+    params = urlencode({"status": "error", "message": message})
+    return redirect(f"{UI_ORIGIN}/callback.html?{params}")
+
+
+# Step 1: Start the OAuth flow.
+# Generates PKCE values and state, saves them to the session, then redirects
+# the user to Hive's authorization page.
 @app.get("/auth/start")
 def auth_start():
     auth = build_authorization_url()
@@ -31,47 +37,40 @@ def auth_start():
     return redirect(auth["authorization_url"])
 
 
+# Step 2: Handle the redirect back from Hive.
+# Validates state, exchanges the authorization code for a token, and redirects
+# back to the UI with the result status.
 @app.get("/callback")
 def callback():
     error = request.args.get("error")
-    error_description = request.args.get("error_description")
     code = request.args.get("code")
     state = request.args.get("state")
 
     if error:
-        params = urlencode({"status": "error", "message": error_description or error})
-        return redirect(f"{UI_ORIGIN}/callback.html?{params}")
-
+        return redirect_error(request.args.get("error_description") or error)
     if not code:
-        params = urlencode(
-            {"status": "error", "message": "Missing authorization code."}
-        )
-        return redirect(f"{UI_ORIGIN}/callback.html?{params}")
-
+        return redirect_error("Missing authorization code.")
     if not session.get("oauth_state") or state != session.get("oauth_state"):
-        params = urlencode({"status": "error", "message": "State mismatch."})
-        return redirect(f"{UI_ORIGIN}/callback.html?{params}")
-
+        return redirect_error("State mismatch.")
     if not session.get("code_verifier"):
-        params = urlencode(
-            {"status": "error", "message": "Missing PKCE code verifier."}
-        )
-        return redirect(f"{UI_ORIGIN}/callback.html?{params}")
+        return redirect_error("Missing PKCE code verifier.")
 
     try:
         token_response = exchange_code_for_token(code, session["code_verifier"])
 
+        # Clear PKCE values and store the token response for the UI to retrieve.
         session["oauth_state"] = None
         session["code_verifier"] = None
         session["auth_result"] = token_response
 
-        params = urlencode({"status": "success"})
-        return redirect(f"{UI_ORIGIN}/callback.html?{params}")
+        return redirect(f"{UI_ORIGIN}/callback.html?status=success")
     except Exception as error:
-        params = urlencode({"status": "error", "message": str(error)})
-        return redirect(f"{UI_ORIGIN}/callback.html?{params}")
+        return redirect_error(str(error))
 
 
+# Step 3: Return the token response to the UI.
+# The token is kept server-side in the session and served via this endpoint —
+# it is never passed through the browser URL or stored client-side.
 @app.get("/auth/result")
 def auth_result():
     auth_result = session.get("auth_result")

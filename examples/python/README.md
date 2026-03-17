@@ -1,6 +1,6 @@
-# Hive OAuth Example (Python)
+# Hive OAuth Example — Python
 
-Simple OAuth 2.0 example showing how a basic UI connects to Hive's OAuth server and initiates the Authorization Code flow.
+Flask implementation of the Hive API v2 OAuth 2.0 Authorization Code Flow with PKCE.
 
 ## Requirements
 
@@ -8,40 +8,41 @@ Python 3.10+
 
 ## Setup
 
-Copy environment file:
+```bash
+cd examples/python
+cp .env.example .env
+```
 
-    cp .env.example .env
-
-Fill in your Hive OAuth credentials.
+Fill in your Hive OAuth credentials in `.env`.
 
 ## Install
 
-Create and activate a virtual environment:
-
-    cd examples/python
-    python3 -m venv .venv
-    source .venv/bin/activate
-
-Install dependencies:
-
-    pip install -r requirements.txt
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 ## Run
 
-Start OAuth server:
+In one terminal, start the OAuth server:
 
-    python server/app.py
+```bash
+python server/app.py
+```
 
-In another terminal:
+In another terminal, serve the UI:
 
-    cd examples/python
-    source .venv/bin/activate
-    python -m http.server 3000 --directory ui
+```bash
+python -m http.server 3000 --directory ui
+```
 
-## Open
-
-    http://localhost:3000
+Open http://localhost:3000.
 
 ## Redirect URI
 
-    http://localhost:4000/callback
+Register the following in your Hive OAuth Application:
+
+```
+http://localhost:4000/callback
+```
