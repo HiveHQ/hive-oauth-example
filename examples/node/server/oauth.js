@@ -1,4 +1,7 @@
 import crypto from "crypto";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const CONFIG = {
   clientId: process.env.HIVE_CLIENT_ID,
