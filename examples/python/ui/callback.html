@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hive OAuth Callback</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 720px;
+        margin: 60px auto;
+        padding: 0 20px;
+        line-height: 1.5;
+      }
+      h1 { margin-bottom: 12px; }
+      p { margin-bottom: 16px; }
+      pre {
+        background: #f3f3f3;
+        padding: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Loading...</h1>
+    <p id="message"></p>
+    <pre id="details"></pre>
+    <a href="/">Start Over</a>
+    <script>
+      async function loadResult() {
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.get("status") === "error") {
+          document.getElementById("title").innerText = "Authorization failed";
+          document.getElementById("message").innerText =
+            params.get("message") || "Authorization failed.";
+          return;
+        }
+
+        try {
+          const response = await fetch("http://localhost:4000/auth/result", {
+            credentials: "include",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Could not load authorization result.");
+          }
+
+          document.getElementById("title").innerText = "Authorization successful";
+          document.getElementById("message").innerText =
+            "Hive returned tokens successfully.";
+          document.getElementById("details").innerText =
+            JSON.stringify(data, null, 2);
+        } catch (error) {
+          document.getElementById("title").innerText = "Authorization failed";
+          document.getElementById("message").innerText = error.message;
+        }
+      }
+
+      loadResult();
+    </script>
+  </body>
+</html>

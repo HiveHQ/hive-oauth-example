@@ -1,0 +1,21 @@
+{
+  "name": "hive-oauth-example-node",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ui": "npx serve ui -l 3000",
+    "server": "node server/app.js",
+    "dev": "npx concurrently \"npm run ui\" \"npm run server\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "serve": "^14.2.4"
+  }
+}
