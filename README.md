@@ -1,11 +1,20 @@
-# hive-oauth-example
+# Hive OAuth 2.0 Example
 
-Reference implementations of the **Hive API v2 OAuth 2.0 Authorization Code Flow with PKCE**.
+![Hive OAuth Example Banner](https://s3.us-east-1.amazonaws.com/hive.public/hive_oauth_example_banner.png)
+
+Reference implementations of the OAuth 2.0 authorization code flow with PKCE for Hive API v2.
+Each example includes a minimal UI to trigger the flow and a backend server to handle the token exchange securely.
+
+_Note_: Even though this can be fully implemented client-side, we strongly recommend using a server because the OAuth client secret should never be exposed in client-side code.
 
 ## Available examples
 
 - [`examples/python`](examples/python) — Flask server + static HTML UI
 - [`examples/node`](examples/node) — Express server + static HTML UI
+
+## Documentation
+
+For detailed documentation on the Hive API v2 OAuth 2.0 authorization code flow with PKCE, see the [Hive API docs](https://hivealive.notion.site/Hive-API-Beta-Documentation-30473434b83b805d8853c696e6ec6875).
 
 ## How it works
 
